@@ -9,6 +9,6 @@
 
 下周目标：
 
-* 阅读论文[`When Mobile Blockchain Meets Edge Computing_IEEE Communication Magazine2018`](./Blockchain-Article/When Mobile Blockchain Meets Edge Computing_IEEE Communication Magazine2018.pdf)
+* 阅读论文[When Mobile Blockchain Meets Edge Computing_IEEE Communication Magazine2018](./Blockchain-Article/When Mobile Blockchain Meets Edge Computing_IEEE Communication Magazine2018.pdf)
 
 * 尽快学完Vuejs，以及尽快掌握Hyperledger特性，架构等。
