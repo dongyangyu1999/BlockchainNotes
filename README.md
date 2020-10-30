@@ -15,10 +15,13 @@
 
 # 10.24-10.30
 
+用于开始毕业实习，可能时间需要均匀分配。
 
+* 完成论文[When Mobile Blockchain Meets Edge Computing_IEEE Communication Magazine2018](./Blockchain-Article)阅读以及[笔记记录](./论文阅读)
+* Vue Router部分以及脚手架的学习
 
 下周目标：
 
-* 阅读共识算法poW[Bitcoin: A Peer-to-Peer Electronic Cash System](./Blockchain-Article)
+* 阅读共识算法PoW[Bitcoin: A Peer-to-Peer Electronic Cash System](./Blockchain-Article)
 
-# 10.31-11.6
+# 
