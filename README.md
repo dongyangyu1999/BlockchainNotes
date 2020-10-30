@@ -17,7 +17,7 @@
 
 用于开始毕业实习，可能时间需要均匀分配。
 
-* 完成论文[When Mobile Blockchain Meets Edge Computing_IEEE Communication Magazine2018](./Blockchain-Article)阅读以及[笔记记录](./论文阅读)
+* 完成论文[When Mobile Blockchain Meets Edge Computing_IEEE Communication Magazine2018](./Blockchain-Article)阅读以及[笔记记录](./论文阅读/When Mobile Blockchain Meets Edge Computing.md)
 * Vue Router部分以及脚手架的学习
 
 下周目标：
