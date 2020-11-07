@@ -33,11 +33,11 @@
 
 |符号|注释|
 | ------ | :----------------------------------------- |
-| n (>2) | the number of players in the game(1, …, n) |
+| n(>2) | the number of players in the game(1, …, n) |
 | N      | the set of players |
 | S | A **coalition**: a subset of N |
 | ![image-20201105092210641](Blockchain%20framework%20for%20IoT%20data%20quality%20via%20edge%20computing.assets/image-20201105092210641.png) | the set of all coalitions |
-| u(x) | N中的合作博弈是一个**函数u**(characteristic feature of the game)，该函数为每个联盟$S_i$⊆$S$分配一个实数*u(Si)*。<br />In addition one has the condition u(∅) = 0. |
+| u(x) | N中的合作博弈是一个**函数u**(characteristic feature of the game)，该函数为每个联盟Si$⊆$S​分配一个实数*u(Si)*。<br />In addition one has the condition u(∅) = 0. |
 
 In our case, the set of players is the set of ordered sensors S and the
 characteristic function u is defined as:  
@@ -60,7 +60,7 @@ such that, for each coalition of sensors, u = 1 or 0 if that particular coalitio
 首先，计算每个联盟中所有节点（传感器）的平均温度。
 ![image-20201105095055128](Blockchain%20framework%20for%20IoT%20data%20quality%20via%20edge%20computing.assets/image-20201105095055128.png)
 
-$T_{s_{i}}^{k}$表示在第$k$次迭代中，$S_i$附近一带所有传感器的平均温度，V是该联盟中的节点（传感器）数量
+![image-20201107090830231](Blockchain%20framework%20for%20IoT%20data%20quality%20via%20edge%20computing.assets/image-20201107090830231.png)表示在第k次迭代中，![image-20201107090904031](Blockchain%20framework%20for%20IoT%20data%20quality%20via%20edge%20computing.assets/image-20201107090904031.png)附近一带所有传感器的平均温度，V是该联盟中的节点（传感器）数量
 
 第二步是计算<u>每个传感器温度与平均温度的差值</u>的绝对值
 ![image-20201105095553953](Blockchain%20framework%20for%20IoT%20data%20quality%20via%20edge%20computing.assets/image-20201105095553953.png)
@@ -68,20 +68,15 @@ $T_{s_{i}}^{k}$表示在第$k$次迭代中，$S_i$附近一带所有传感器的
 第三步是使用(6)中的插值绝对值计算出**置信区间**（展现这个参数的真实值有一定概率落在测量结果的周围的程度，其给出的是被测量参数的测量值的可信程度），误差为1%
 ![image-20201105095959950](Blockchain%20framework%20for%20IoT%20data%20quality%20via%20edge%20computing.assets/image-20201105095959950.png)
 
-第四步是统计推断（hypothesis test），如果传感器的温度在区间$I_{s_{i}}^{k}$内，则属于投票联盟，否则不属于投票联盟:
+第四步是统计推断（hypothesis test），如果传感器的温度在区间![image-20201107090815555](Blockchain%20framework%20for%20IoT%20data%20quality%20via%20edge%20computing.assets/image-20201107090815555.png)内，则属于投票联盟，否则不属于投票联盟:
 ![image-20201105100234144](Blockchain%20framework%20for%20IoT%20data%20quality%20via%20edge%20computing.assets/image-20201105100234144.png)
 
 第五步是不断修复的过程：特征函数将迭代地重复这个过程(k为迭代的次数)，直到迭代中的所有传感器**都**属于投票联盟。
-在每一次迭代k中，可以得到第k步中联盟$S_j$ 的**收益向量*payoff vector***$\left(P V\left(S_{j}^{k}\right)\right)$, (1≤j≤n，其中n为联盟中传感器的数量)
+在每一次迭代k中，可以得到第k步中联盟$S_j$ 的**收益向量*payoff vector***,
+![image-20201107090801011](Blockchain%20framework%20for%20IoT%20data%20quality%20via%20edge%20computing.assets/image-20201107090801011.png) (1≤j≤n，其中n为联盟中传感器的数量)
 ![image-20201105100708299](Blockchain%20framework%20for%20IoT%20data%20quality%20via%20edge%20computing.assets/image-20201105100708299.png)
 
-博弈迭代的终止条件是<img src="http://chart.googleapis.com/chart?cht=tx&chl= PV\left(S_{j}^{k}\right)=PV\left(S_{j}^{k+1}\right)" style="border:none;">，也就是说令<img src="http://chart.googleapis.com/chart?cht=tx&chl= P V\left(S_{j}^{k}\right)=\left(u^{k}\left(s_{1}\right), \ldots, u^{k}\left(s_{n}\right)\right)" style="border:none;">并且令<img src="http://chart.googleapis.com/chart?cht=tx&chl= P V\left(S_{j}^{k+1}\right)=\left(u^{k+1}\left(s_{1}\right), \ldots, u^{k+1}\left(s_{n}\right)\right)" style="border:none;">。当两个收益向量包含相同元素时，迭代工程就中止。过程如下：
-
-
-
-
-
-$PV\left(S_{j}^{k}\right)=PV\left(S_{j}^{k+1}\right)$，也就是说令$P V\left(S_{j}^{k}\right)=\left(u^{k}\left(s_{1}\right), \ldots, u^{k}\left(s_{n}\right)\right)$并且令$P V\left(S_{j}^{k+1}\right)=\left(u^{k+1}\left(s_{1}\right), \ldots, u^{k+1}\left(s_{n}\right)\right)$。当两个收益向量包含相同元素时，迭代工程就中止。过程如下：![image-20201105100629726](Blockchain%20framework%20for%20IoT%20data%20quality%20via%20edge%20computing.assets/image-20201105100629726.png)
+博弈迭代的终止条件是![image-20201107090657633](Blockchain%20framework%20for%20IoT%20data%20quality%20via%20edge%20computing.assets/image-20201107090657633.png)，也就是说令![image-20201107090719838](Blockchain%20framework%20for%20IoT%20data%20quality%20via%20edge%20computing.assets/image-20201107090719838.png)并且令![image-20201107090734502](Blockchain%20framework%20for%20IoT%20data%20quality%20via%20edge%20computing.assets/image-20201107090734502.png)。当两个收益向量包含相同元素时，迭代工程就中止。过程如下：![image-20201105100629726](Blockchain%20framework%20for%20IoT%20data%20quality%20via%20edge%20computing.assets/image-20201105100629726.png)
 
 由于所提出的博弈是一个合作博弈，其解的概念是一个参与者联盟，我们称之为**博弈均衡** (game equilibrium (GE) )。该博弈中的GE被定义为**投票超过一半的最小联盟**。获胜的联盟必须满足以下条件:
 
@@ -146,4 +141,4 @@ WSN网络是由部署在监测区域内大量的廉价微型传感器节点组�
 # 启发：
 
 * 论文中的解释非常严谨，一些理所当然的条件也标明在内，如第四页中规定“Coalitions cannot be formed by a single sensor”联盟不能仅有单个传感器组成。
-* 通过[统计推论](https://blog.csdn.net/huangkaihong/article/details/106741357) (Statistical Inference)取得一个范围内的平均数据，通过迭代再进行比较的方式去修复可能存在问题的结点数据。
+* 通过[统计推论](https://blog.csdn.net/huangkaihong/article/details/106741357) (Statistical Inference)*取得一个范围内的平均数据，通过迭代再进行比较的方式去修复可能存在问题的结点数据。
