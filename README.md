@@ -24,4 +24,12 @@
 
 * 阅读共识算法PoW[Bitcoin: A Peer-to-Peer Electronic Cash System](./Blockchain-Article)
 
-# 
+# 10.31-11.6
+
+* 完成论文[Blockchain framework for IoT data quality via edge computing](./Blockchain-Article)阅读以及笔记
+* Vue Promise，Vuex及网络模块封装学习。
+
+下周目标：
+
+* 利用VueJs搭建项目。
+* 阅读共识算法PoW

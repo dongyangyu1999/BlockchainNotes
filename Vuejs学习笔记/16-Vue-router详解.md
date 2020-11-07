@@ -458,12 +458,84 @@ export default {
 1. 如果在页面下方有一个单独的TabBar组件，如何封装
    * 自定义TabBar组件，在App中使用
    * 让TabBar处于底部，并且设置相关的样式
+   
 2. TabBar中显示的内容由外界决定
    * 定义插槽
    * flex布局平分TabBar
+   
 3. 自定义TabBarItem，可以传入图片和文字
    * 定义TabBarItem，并且定义两个插槽：图片、文字。
    * 给两个插槽外层包装div，用于设置样式
    * 填充插槽，实现底部TabBar的效果
-4. 
+   
+4. 传入高亮图片
+
+   * 定义另外一个插槽，插入active-icon的数据
+   * 定义一个变量`isActive`，通过v-show来决定是否显示对应的icon
+
+5. TabBarItem绑定路由数据
+
+   * 安装路由：`npm install vue-router --save`
+   * 完成`router/index.js`的内容，以及创建对应的组件
+   * `main.js`中注册router
+   * APP中加入`<router-view>`组件
+
+6. 点击item跳转到对应路由，并且动态决定`isActive`
+
+   * 监听item的点击，通过`this.$router.replace()`替换路由路径
+
+   * 通过`this.$route.path.indexOf(this.path) !== -1`来判断是否是active
+     `indexOf() `方法可返回某个指定的字符串值在字符串中首次出现的位置。
+
+     > 如果要检索的字符串值没有出现，则该方法返回 -1。
+
+7. 动态计算active样式
+
+   * 封装新的计算属性：`this.isActive?{'color': 'red'}:{}`
+
+
+
+# 给路径起别名
+
+> 相当于给绝对路径起个简短的名字
+
+在`build/webpack.base.conf.js`中，如下图所示，用`@`代替`src`路径。
+
+
+
+![image-20201031094326511](16-Vue-router%E8%AF%A6%E8%A7%A3.assets/image-20201031094326511.png)
+
+```js
+resolve: {
+  extensions: ['.js', '.vue', '.json'],
+  alias: {
+    '@': resolve('src'),
+    'assets': resolve('src/assets'),
+    'components': resolve('src/components'),
+    'views': resolve('src/views'),
+  }
+},
+```
+
+## 导入组件
+
+比如要导入`TabBar`，下方的代码就能修改成`components/tabbar/TabBar`
+
+```
+<script>
+import TabBar from "./tabbar/TabBar";
+import TabBarItem from "./tabbar/TabBarItem";
+```
+
+![image-20201031094410230](16-Vue-router%E8%AF%A6%E8%A7%A3.assets/image-20201031094410230.png)
+
+## DOM中路径要加`~`波浪号
+
+```js
+<img slot="item-icon" src="~assets/img/tabbar/home.svg" alt="">
+```
+
+不加波浪号找不到。
+
+![image-20201031095328887](16-Vue-router%E8%AF%A6%E8%A7%A3.assets/image-20201031095328887.png)
 
