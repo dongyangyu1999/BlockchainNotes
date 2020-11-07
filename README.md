@@ -26,7 +26,7 @@
 
 # 10.31-11.6
 
-* 完成论文[Blockchain framework for IoT data quality via edge computing](./Blockchain-Article)阅读以及笔记
+* 完成论文[Blockchain framework for IoT data quality via edge computing](./Blockchain-Article)阅读以及[笔记](https://github.com/Dongyang-Yu/BlockchainNotes/blob/main/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/Blockchain%20framework%20for%20IoT%20data%20quality%20via%20edge%20computing.md)
 * Vue Promise，Vuex及网络模块封装学习。
 
 下周目标：
