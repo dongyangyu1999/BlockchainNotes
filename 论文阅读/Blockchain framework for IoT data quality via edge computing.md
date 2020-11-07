@@ -75,9 +75,11 @@ $T_{s_{i}}^{k}$表示在第$k$次迭代中，$S_i$附近一带所有传感器的
 在每一次迭代k中，可以得到第k步中联盟$S_j$ 的**收益向量*payoff vector***$\left(P V\left(S_{j}^{k}\right)\right)$, (1≤j≤n，其中n为联盟中传感器的数量)
 ![image-20201105100708299](Blockchain%20framework%20for%20IoT%20data%20quality%20via%20edge%20computing.assets/image-20201105100708299.png)
 
-博弈迭代的终止条件是
+博弈迭代的终止条件是<img src="http://chart.googleapis.com/chart?cht=tx&chl= PV\left(S_{j}^{k}\right)=PV\left(S_{j}^{k+1}\right)" style="border:none;">，也就是说令<img src="http://chart.googleapis.com/chart?cht=tx&chl= P V\left(S_{j}^{k}\right)=\left(u^{k}\left(s_{1}\right), \ldots, u^{k}\left(s_{n}\right)\right)" style="border:none;">并且令<img src="http://chart.googleapis.com/chart?cht=tx&chl= P V\left(S_{j}^{k+1}\right)=\left(u^{k+1}\left(s_{1}\right), \ldots, u^{k+1}\left(s_{n}\right)\right)" style="border:none;">。当两个收益向量包含相同元素时，迭代工程就中止。过程如下：
 
-<img src="http://chart.googleapis.com/chart?cht=tx&chl= PV\left(S_{j}^{k}\right)=PV\left(S_{j}^{k+1}\right)" style="border:none;">
+
+
+
 
 $PV\left(S_{j}^{k}\right)=PV\left(S_{j}^{k+1}\right)$，也就是说令$P V\left(S_{j}^{k}\right)=\left(u^{k}\left(s_{1}\right), \ldots, u^{k}\left(s_{n}\right)\right)$并且令$P V\left(S_{j}^{k+1}\right)=\left(u^{k+1}\left(s_{1}\right), \ldots, u^{k+1}\left(s_{n}\right)\right)$。当两个收益向量包含相同元素时，迭代工程就中止。过程如下：![image-20201105100629726](Blockchain%20framework%20for%20IoT%20data%20quality%20via%20edge%20computing.assets/image-20201105100629726.png)
 
