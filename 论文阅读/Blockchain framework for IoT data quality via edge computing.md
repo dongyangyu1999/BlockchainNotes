@@ -37,7 +37,7 @@
 | N      | the set of players |
 | S | A **coalition**: a subset of N |
 | ![image-20201105092210641](Blockchain%20framework%20for%20IoT%20data%20quality%20via%20edge%20computing.assets/image-20201105092210641.png) | the set of all coalitions |
-| u(x) | N中的合作博弈是一个**函数u**(characteristic feature of the game)，该函数为每个联盟Si$⊆$S​分配一个实数*u(Si)*。<br />In addition one has the condition u(∅) = 0. |
+| u(x) | N中的合作博弈是一个**函数u**(characteristic feature of the game)，该函数为每个联盟Si​⊆​S​分配一个实数*u(Si)*。<br />In addition one has the condition u(∅) = 0. |
 
 In our case, the set of players is the set of ordered sensors S and the
 characteristic function u is defined as:  
@@ -141,4 +141,4 @@ WSN网络是由部署在监测区域内大量的廉价微型传感器节点组�
 # 启发：
 
 * 论文中的解释非常严谨，一些理所当然的条件也标明在内，如第四页中规定“Coalitions cannot be formed by a single sensor”联盟不能仅有单个传感器组成。
-* 通过[统计推论](https://blog.csdn.net/huangkaihong/article/details/106741357) (Statistical Inference)*取得一个范围内的平均数据，通过迭代再进行比较的方式去修复可能存在问题的结点数据。
+* 通过[统计推论](https://blog.csdn.net/huangkaihong/article/details/106741357) (Statistical Inference)取得一个范围内的平均数据，通过迭代再进行比较的方式去修复可能存在问题的结点数据。
