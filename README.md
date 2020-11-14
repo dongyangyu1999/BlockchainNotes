@@ -36,7 +36,7 @@
 
 # 11.7-11.13
 
-* 完成比特币白皮书《[Bitcoin A Peer-to-Peer Electronic Cash System](./Blockchain-Article)》阅读（包含PoW共识算法）以及[笔记]()
+* 完成比特币白皮书《[Bitcoin A Peer-to-Peer Electronic Cash System](./Blockchain-Article)》阅读（包含PoW共识算法）以及[笔记](https://github.com/Dongyang-Yu/BlockchainNotes/blob/main/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/Bitcoin%20A%20Peer-to-Peer%20Electronic%20Cash%20System.md)
 * [VueJs项目](https://github.com/Dongyang-Yu/Vue-mall)搭建进行中
 
 下周目标：
