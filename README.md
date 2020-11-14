@@ -33,3 +33,13 @@
 
 * 利用VueJs搭建项目。
 * 阅读共识算法PoW
+
+# 11.7-11.13
+
+* 完成比特币白皮书《[Bitcoin A Peer-to-Peer Electronic Cash System](./Blockchain-Article)》阅读（包含PoW共识算法）以及[笔记]()
+* [VueJs项目](https://github.com/Dongyang-Yu/Vue-mall)搭建进行中
+
+下周目标：
+
+* 阅读论文《[PolyShard-Coded Sharding Achieves Linearly Scaling Efficiency and Security Simultaneously](./Blockchain-Article)》
+* 继续搭建Vue项目

@@ -138,7 +138,7 @@ WSN网络是由部署在监测区域内大量的廉价微型传感器节点组�
 
 
 
-# 启发：
+# 启发
 
 * 论文中的解释非常严谨，一些理所当然的条件也标明在内，如第四页中规定“Coalitions cannot be formed by a single sensor”联盟不能仅有单个传感器组成。
 * 通过[统计推论](https://blog.csdn.net/huangkaihong/article/details/106741357) (Statistical Inference)取得一个范围内的平均数据，通过迭代再进行比较的方式去修复可能存在问题的结点数据。

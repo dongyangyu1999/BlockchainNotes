@@ -267,8 +267,9 @@ Vuex的store状态的更新唯一方式：**<u>提交Mutation</u>**
 ### Action返回的Promise
 
 * 前面我们学习ES6语法的时候说过, Promise经常用于异步操作.
-  * 在Action中, 我们可以将异步操作放在一个Promise中, 并且在成功或者失败后, 调用对应的resolve或reject.
-
+  
+* 在Action中, 我们可以将异步操作放在一个Promise中, 并且在成功或者失败后, 调用对应的resolve或reject.
+  
 * OK, 我们来看下面的代码:
   ![image-20201102083519387](19-Vuex%E8%AF%A6%E8%A7%A3.assets/image-20201102083519387.png)
 
