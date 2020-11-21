@@ -46,7 +46,7 @@
 
 # 11.14-11.20
 
-* 完成PBFT《[Practical Byzantine Fault Tolerance]()》论文阅读以及[笔记]()记录
+* 完成PBFT《[Practical Byzantine Fault Tolerance]()》论文阅读以及[笔记](https://github.com/Dongyang-Yu/BlockchainNotes/blob/main/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/Practical%20Byzantine%20Fault%20Tolerance.md)记录
 * VueJs项目搭建进行中
 
 下周目标：
