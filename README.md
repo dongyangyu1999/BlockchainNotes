@@ -43,3 +43,14 @@
 
 * 阅读论文《[PolyShard-Coded Sharding Achieves Linearly Scaling Efficiency and Security Simultaneously](./Blockchain-Article)》
 * 继续搭建Vue项目
+
+# 11.14-11.20
+
+* 完成PBFT《[Practical Byzantine Fault Tolerance]()》论文阅读以及[笔记]()记录
+* VueJs项目搭建进行中
+
+下周目标：
+
+* 阅读论文《[PolyShard-Coded Sharding Achieves Linearly Scaling Efficiency and Security Simultaneously](./Blockchain-Article)》
+* 继续搭建VueJs项目
+* 搜集资料，决定毕业设计内容
