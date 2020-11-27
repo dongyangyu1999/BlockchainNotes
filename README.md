@@ -54,3 +54,13 @@
 * 阅读论文《[PolyShard-Coded Sharding Achieves Linearly Scaling Efficiency and Security Simultaneously](./Blockchain-Article)》
 * 继续搭建VueJs项目
 * 搜集资料，决定毕业设计内容
+
+# 11.21-11.27
+
+* 阅读溯源系统文章《[A Scheme about Agricultural Produce Traceability using Blockchain based on Hyperledger Fabric](./Blockchain-Article)》以及[笔记](https://github.com/Dongyang-Yu/Vue-mall)的记录。
+* [VueJs项目](https://github.com/Dongyang-Yu/Vue-mall)搭建，网络商城即将搭建完成。
+
+下周目标：
+
+* 搜集毕设资料
+* 完成VueJs项目的搭建
