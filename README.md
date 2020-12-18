@@ -57,10 +57,42 @@
 
 # 11.21-11.27
 
-* 阅读溯源系统文章《[A Scheme about Agricultural Produce Traceability using Blockchain based on Hyperledger Fabric](./Blockchain-Article)》以及[笔记](https://github.com/Dongyang-Yu/Vue-mall)的记录。
+* 阅读溯源系统文章《[A Scheme about Agricultural Produce Traceability using Blockchain based on Hyperledger Fabric](./Blockchain-Article)》以及[笔记](https://github.com/Dongyang-Yu/BlockchainNotes/blob/main/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/A%20Scheme%20about%20Agricultural%20Produce%20Traceability%20using%20Blockchain%20based%20on%20Hyperledger%20Fabric.md)的记录。
 * [VueJs项目](https://github.com/Dongyang-Yu/Vue-mall)搭建，网络商城即将搭建完成。
 
 下周目标：
 
 * 搜集毕设资料
 * 完成VueJs项目的搭建
+
+# 11.28-12.4
+
+* 重新阅读比特币白皮书《[Bitcoin A Peer-to-Peer Electronic Cash System](./Blockchain-Article)》，进行PPT呈现并讲解。
+* [VueJs项目](https://github.com/Dongyang-Yu/Vue-mall)搭建
+* 学习Bootstrap前段框架，笔记记录
+
+下周目标：
+
+* 完成VueJs项目的搭建
+* 搜集毕设资料
+
+# 12.5-12.11
+
+* VueJs项目基本搭建完成。
+* Bootstrap基本掌握
+* 毕业实习结束
+
+下周目标：
+
+* 弄懂比特币细节具体操作
+
+# 12.12-12.18
+
+* 深入理解比特币流程，如交易模型、交易如何打包入区块中、比特币系统是如何避免双重支付等等
+* 制作比特币相关PPT展示
+* 阅读PoC容量证明共识机制相关资料
+
+下周目标：
+
+* 搜集PoC资料，搞明白技术原理，制作PPT
+* 搜集基于存储的共识（EPoSt）相关资料
