@@ -101,3 +101,14 @@
 
 * 了解PoC容量证明和PoSt时空证明共识机制
 * 阅读FileCoin白皮书
+
+# 12.26-
+
+* 阅读《Coded Merkle Tree: Solving Data Availability Attacks in Blockchains》
+  * 其引用论文《Fraud and Data Availability Proofs: Maximising Light Client Security and Scaling Blockchains with Dishonest Majorities》
+    * Erasure Code纠删码
+* 阅读《精通比特币》中比特币客户端的类型、源代码、模拟操作
+  * 网络模型	
+    * Full nodes全节点
+    * light nodes轻节点
+  * 交易脚本的代码具体实现
