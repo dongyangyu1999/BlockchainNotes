@@ -112,3 +112,12 @@
     * Full nodes全节点
     * light nodes轻节点
   * 交易脚本的代码具体实现
+
+# 1.2-1.8
+
+无进度汇报
+
+# 1.9-1.15
+
+* 搭建Fabric v1.4.0项目
+* 阅读Fabric官方文档，查看案例源码（fabcar, fabric-samples）进行代码学习

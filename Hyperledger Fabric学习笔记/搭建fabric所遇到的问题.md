@@ -1,3 +1,5 @@
+> 此测试所拉取版本为 v1.1
+
 # 使用`./network_setup.sh` 脚本来搭建一个集群
 
 疑问：在脚本运行过程中遇到了如下错误
@@ -12,6 +14,7 @@ Error: Error endorsing chaincode: rpc error: code = Unknown desc = Error startin
 
 编辑文件`go/src/github.com/hyperledger/fabric/examples/e2e_cli/base/peer-base.yaml` 文件
 
+```
 将其中的
 
 - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=e2ecli_default
@@ -19,6 +22,8 @@ Error: Error endorsing chaincode: rpc error: code = Unknown desc = Error startin
 修改为
 
 - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=e2e_cli_default
+
+```
 
 并且使用./network_setup.sh down 将之前启动的关闭掉
 
