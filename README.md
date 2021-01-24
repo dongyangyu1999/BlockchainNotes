@@ -134,4 +134,4 @@
   * 证书配置文件`crypto-config.yaml`
   * 组织、通道配置文件`configtx.yaml`
 
-> 笔记在[Hyperledger Fabric学习笔记](./Hyperledger Fabric学习笔记)
+> 笔记位置[Hyperledger Fabric学习笔记](https://github.com/dongyangyu1999/BlockchainNotes/tree/main/Hyperledger%20Fabric%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0)
