@@ -121,3 +121,17 @@
 
 * 搭建Fabric v1.4.0项目
 * 阅读Fabric官方文档，查看案例源码（fabcar, fabric-samples）进行代码学习
+
+# 1.16-1.22
+
+* 阅读Fabric文档、教程、网络架构
+* 运行商业票据项目，阅读链码API并尝试编写代码
+
+* 运行`oldchain`项目
+
+* vagrant，docker指令学习，
+* 分析配置文件
+  * 证书配置文件`crypto-config.yaml`
+  * 组织、通道配置文件`configtx.yaml`
+
+> 笔记在[Hyperledger Fabric学习笔记](./Hyperledger Fabric学习笔记)
