@@ -125,7 +125,7 @@ root@localhost test $ tree ./crypto-config/ordererOrganizations/ -L 4
     ├── ca 	  # CA服务器的签名文件
     │   ├── b0aa3d3428d28cf708e7884c2f737c42a8a4ae43040eef5c43643184b110911b_sk
     │   └── ca.test.com-cert.pem
-    ├── msp
+    ├── msp   # 存放代表该组织的身份信息
     │   ├── admincerts  # orderer管理员的证书
     │   │   └── Admin@test.com-cert.pem
     │   ├── cacerts     # orderer根域名服务器的签名证书
@@ -167,20 +167,20 @@ root@localhost peerOrganizations # tree
 │   │   ├── config.yaml
 │   │   └── tlscacerts  # TLS连接身份证书
 │   │       └── tlsca.go.test.com-cert.pem
-│   ├── peers
+│   ├── peers  # 存放该组织下所有peer节点的证书
 │   │   ├── peer0.go.test.com
 │   │   │   ├── msp
 │   │   │   │   ├── admincerts # 组织的管理证书, 创建通道必须要有该证书
 │   │   │   │   ├── cacerts    # 组织根证书
 │   │   │   │   │   └── ca.go.test.com-cert.pem
 │   │   │   │   ├── config.yaml 
-│   │   │   │   ├── keystore   # 当前节点的私钥
+│   │   │   │   ├── keystore   # 本节点的身份私钥，用来签名
 │   │   │   │   │   └── 42f19ead596381652fd9d0dfb7fd6b78660c4b9a75d5c329d5fe0b658c25622d_sk
-│   │   │   │   ├── signcerts  # 当前节点签名的数字证书
+│   │   │   │   ├── signcerts  # 验证本节点签名的证书，被组织根证书签名
 │   │   │   │   │   └── peer0.go.test.com-cert.pem
 │   │   │   │   └── tlscacerts # tls连接的身份证书
 │   │   │   │       └── tlsca.go.test.com-cert.pem
-│   │   │   └── tls
+│   │   │   └── tls   # 存放tls相关的证书和私钥
 │   │   │       ├── ca.crt     # 组织的根证书
 │   │   │       ├── server.crt # 验证本节点签名的证书
 │   │   │       └── server.key # 当前节点的私钥
@@ -191,8 +191,8 @@ root@localhost peerOrganizations # tree
 │   ├── tlsca
 │   │   ├── a2234b85a5bf1f3d3814041fe4bbe28e755694a4683690872510a35f31171001_sk
 │   │   └── tlsca.go.test.com-cert.pem
-│   └── users
-│       ├── Admin@go.test.com
+│   └── users  # 存放属于该组织的用户实体
+│       ├── Admin@go.test.com # 管理员用户的信息，包括其msp证书和tls证书
 │       │   ├── msp
 │       │   │   ├── admincerts   # 组织的根证书, 作为管理身份的验证
 │       │   │   ├── cacerts      # 用户所属组织的根证书
@@ -208,7 +208,7 @@ root@localhost peerOrganizations # tree
 │       │       ├── ca.crt       # 组织的根证书
 │       │       ├── client.crt   # 客户端身份的证书
 │       │       └── client.key   # 客户端的私钥
-│       ├── User1@go.test.com
+│       ├── User1@go.test.com # 第一个用户的信息，结构和admin相同，包括msp证书和tls证书
 │       │   ├── msp
 │       │   │   ├── admincerts
 │       │   │   ├── cacerts

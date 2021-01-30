@@ -93,6 +93,15 @@ STATUS: 容器状态。
 PORTS: 容器的端口信息和使用的连接类型（tcp\udp）。
 NAMES: 自动分配的容器名称。
 
+## 删除容器
+
+```bash
+docker rm <CONTAINER ID|NAME> <CONTAINER ID|NAME>
+
+# 删除所有容器
+docker rm $(docker ps -a -q)
+```
+
 # 获取容器/镜像的元数据
 
 ```bash

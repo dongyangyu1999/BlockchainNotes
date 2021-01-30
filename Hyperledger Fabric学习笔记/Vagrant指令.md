@@ -165,6 +165,36 @@ systemctl start docker  # 启动docker
 
 # Vagrantfile
 
+>  Vagrantfile的主要功能是描述项目所需的机器类型，以及如何配置和供应这些机器。 
+>
+> `Vagrantfile` 主要包括三个方面的配置，虚拟机的配置、SSH配置、Vagrant 的一些基础配置。Vagrant 是使用 Ruby 开发的，所以它的配置语法也是 Ruby，具体可以查阅官方[文档](https://www.vagrantup.com/docs/vagrantfile)。
+
+可以通过`vagrant init`生成Vagrantfile模板文件，Vagrantfile 将大致采用以下格式：
+
+```
+Vagrant.configure("2") do |config|
+  # ...
+end
+```
+
+上面示例中第一行的`“2”`代表配置对象 config 的版本，该配置将用于该块的配置（`do` 和 `end` 之间的部分）。这个对象在不同版本之间可能差异很大。
+
+> 目前只支持两个版本：“1”和“2”。版本 1 代表 Vagrant 1.0.x 的配置。“2”代表 1.1+ 至 2.0.x 的配置。
+
+## 配置详解
+
+下面是一些常用的配置：
+
+`config.vm.hostname`：配置虚拟机主机名
+`config.vm.network`：这是配置虚拟机网络，由于比较复杂，我们其后单独讨论
+`config.vm.synced_folder`：除了默认的目录绑定外，还可以手动指定绑定
+`config.ssh.username`：默认的用户是vagrant，从官方下载的box往往使用的是这个用户名。如果是自定制的box，所使用的用户名可能会有所不同，通过这个配置设定所用的用户名。
+`config.vm.provision`：我们可以通过这个配置在虚拟机第一次启动的时候进行一些安装配置
+
+
+
+### 给虚拟机命名
+
 * 使用`config.vm.define`给虚拟机指定名称，而不是默认的default。
 * `config.vm.hostname`修改虚拟机操作系统在的主机名
 * `vb.name`修改的是virtualbox(或hyperv)中显示的虚拟机的名称，对于virtualbox，可使用`name`属性来修改，对于hyperv，可使用`vmname`属性来修改

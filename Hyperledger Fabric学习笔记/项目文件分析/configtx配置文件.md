@@ -4,9 +4,49 @@
 
 组织机构配置文件`configtx.yaml`主要用来配置fabric的组织结构，通道及锚节点的配置。它主要完成以下几个功能
 
-- 生成启动 Orderer 需要的创世区块**orderer.block(genesis.block)**
-- 创建应用通道所需的**配置交易文件**
-- 生成组织**锚节点更新配置交易文件**
+- 生成启动 **Orderer 需要的创世区块orderer**.block(genesis.block)
+- 创建**应用通道**所需的配置交易文件
+- 生成**组织锚节点**更新配置交易文件
+
+# configtxgen 命令语法
+
+官方参考链接：https://hyperledger-fabric.readthedocs.io/zh_CN/release-1.4/commands/configtxgen.html?highlight=configtx.yaml#null
+
+```
+Usage of configtxgen:
+  -asOrg string
+      以特定组织（按名称）执行配置生成，仅包括组织（可能）有权设置的写集中的值。
+  -channelCreateTxBaseProfile string
+      指定要视为排序系统通道当前状态的轮廓（profile），以允许在通道创建交易生成期间修改非应用程序参数。仅在与 “outputCreateChannelTX”  结合时有效。
+  -channelID string
+      配置交易中使用的通道 ID。
+  -configPath string
+      包含所用的配置的路径。（如果设置的话），不设置默认就是$FABRIC_CFG_PATH
+  -inspectBlock string
+      打印指定路径的区块中包含的配置。
+  -inspectChannelCreateTx string
+      打印指定路径的交易中包含的配置。
+  -outputAnchorPeersUpdate string
+      创建一个更新锚节点的配置更新（仅在默认通道创建时有效，并仅用于第一次更新）。
+  -outputBlock string
+      写入创世区块的路径。（如果设置的话）
+  -outputCreateChannelTx string
+      写入通道创建交易的路径。（如果设置的话）
+  -printOrg string
+      以 JSON 方式打印组织的定义。（手动向通道中添加组织时很有用）
+  -profile string
+      configtx.yaml 中用于生成的轮廓。默认（“SampleInsecureSolo”）
+  -version
+      显示版本信息。
+```
+
+## 配置注意点
+
+`configtxgen` 工具的输出依赖于 `configtx.yaml`。`configtx.yaml` 可在 `FABRIC_CFG_PATH` 下找到，且在 `configtxgen` 执行时必须存在。
+
+对许多 `configtxgen` 的操作来说，必须提供轮廓名（profile name）。使用轮廓可以在一个文件里描述多条相似的配置。例如，一个轮廓中可以定义含有3个组织的通道，另一个轮廓可能定义了含4个组织的通道。`configtx.yaml` 依赖 YAML 的锚点和引用特性从而避免文件变得繁重。配置中的基础部分使用锚点标记，例如 `&OrdererDefaults`，然后合并到一个轮廓的引用，例如 `<<: *OrdererDefaults`。要注意的是，当使用轮廓来执行 `configtxgen` 时，重写环境变量不必包含轮廓前缀，可以直接从引用轮廓的根元素开始引用。例如，不用指定 `CONFIGTX_PROFILE_SAMPLEINSECURESOLO_ORDERER_ORDERERTYPE`, 而是省略轮廓的细节，使用 `CONFIGTX` 前缀，后面直接使用相对配置名后的元素，例如 `CONFIGTX_ORDERER_ORDERERTYPE`。
+
+
 
 # 案例代码
 
@@ -706,8 +746,7 @@ Profiles:
     # TwoOrgsChannel用来生成channel配置信息，名字可以任意
 		# 需要包含Consortium和Applicatioon两部分。 
     TwoOrgsChannel:
-        Consortium: 
-        	SampleConsortium		## 通道所关联的联盟名称
+        Consortium: SampleConsortium		## 通道所关联的联盟名称
         <<: *ChannelDefaults		## 通道为默认配置，这里直接引用上面channel配置段中的ChannelDefaults
         Application:
             <<: *ApplicationDefaults	## 这里直接引用上面Application配置段中的ApplicationDefaults
@@ -795,3 +834,596 @@ Profiles:
 
 ```
 
+
+
+
+
+# 项目代码
+
+文件名：`configtx.yaml`
+
+```YAML
+Organizations:
+    # Our orgs start from here
+    - &OrdererOrg
+        Name: OrdererOrg
+        ID: OrdererMSP
+        MSPDir: crypto-config/ordererOrganizations/dy/msp
+    - &Org1
+        Name: Org1MSP
+        ID: Org1MSP
+        MSPDir: crypto-config/peerOrganizations/org1.dy/msp
+        AnchorPeers:
+            - Host: peer0.org1.dy
+              Port: 7061
+    - &Org2
+        Name: Org2MSP
+        ID: Org2MSP
+        MSPDir: crypto-config/peerOrganizations/org2.dy/msp
+        AnchorPeers:
+            - Host: peer0.org2.dy
+              Port: 7062
+    - &Org3
+        Name: Org3MSP
+        ID: Org3MSP
+        MSPDir: crypto-config/peerOrganizations/org3.dy/msp
+        AnchorPeers:
+            - Host: peer0.org3.dy
+              Port: 7063
+    - &Org4
+        Name: Org4MSP
+        ID: Org4MSP
+        MSPDir: crypto-config/peerOrganizations/org4.dy/msp
+        AnchorPeers:
+            - Host: peer0.org4.dy
+              Port: 7064
+
+Capabilities:
+    # Channel capabilities apply to both the orderers and the peers and must be
+    # supported by both.
+    # Set the value of the capability to true to require it.
+    Channel: &ChannelCapabilities
+        # V1.3 for Channel is a catchall flag for behavior which has been
+        # determined to be desired for all orderers and peers running at the v1.3.x
+        # level, but which would be incompatible with orderers and peers from
+        # prior releases.
+        # Prior to enabling V1.3 channel capabilities, ensure that all
+        # orderers and peers on a channel are at v1.3.0 or later.
+        V1_3: true
+
+    # Orderer capabilities apply only to the orderers, and may be safely
+    # used with prior release peers.
+    # Set the value of the capability to true to require it.
+    Orderer: &OrdererCapabilities
+        # V1.1 for Orderer is a catchall flag for behavior which has been
+        # determined to be desired for all orderers running at the v1.1.x
+        # level, but which would be incompatible with orderers from prior releases.
+        # Prior to enabling V1.1 orderer capabilities, ensure that all
+        # orderers on a channel are at v1.1.0 or later.
+        V1_1: true
+
+    # Application capabilities apply only to the peer network, and may be safely
+    # used with prior release orderers.
+    # Set the value of the capability to true to require it.
+    Application: &ApplicationCapabilities
+        # V1.3 for Application enables the new non-backwards compatible
+        # features and fixes of fabric v1.3.
+        V1_3: true
+        # V1.2 for Application enables the new non-backwards compatible
+        # features and fixes of fabric v1.2 (note, this need not be set if
+        # later version capabilities are set)
+        V1_2: false
+        # V1.1 for Application enables the new non-backwards compatible
+        # features and fixes of fabric v1.1 (note, this need not be set if
+        # later version capabilities are set).
+        V1_1: false
+
+################################################################################
+#
+#   APPLICATION
+#
+#   This section defines the values to encode into a config transaction or
+#   genesis block for application-related parameters.
+#
+################################################################################
+Application: &ApplicationDefaults
+    ACLs: &ACLsDefault
+        # This section provides defaults for policies for various resources
+        # in the system. These "resources" could be functions on system chaincodes
+        # (e.g., "GetBlockByNumber" on the "qscc" system chaincode) or other resources
+        # (e.g.,who can receive Block events). This section does NOT specify the resource's
+        # definition or API, but just the ACL policy for it.
+        #
+        # User's can override these defaults with their own policy mapping by defining the
+        # mapping under ACLs in their channel definition
+
+        #---Lifecycle System Chaincode (lscc) function to policy mapping for access control---#
+
+        # ACL policy for lscc's "getid" function
+        lscc/ChaincodeExists: /Channel/Application/Readers
+
+        # ACL policy for lscc's "getdepspec" function
+        lscc/GetDeploymentSpec: /Channel/Application/Readers
+
+        # ACL policy for lscc's "getccdata" function
+        lscc/GetChaincodeData: /Channel/Application/Readers
+
+        # ACL Policy for lscc's "getchaincodes" function
+        lscc/GetInstantiatedChaincodes: /Channel/Application/Readers
+
+        #---Query System Chaincode (qscc) function to policy mapping for access control---#
+
+        # ACL policy for qscc's "GetChainInfo" function
+        qscc/GetChainInfo: /Channel/Application/Readers
+
+        # ACL policy for qscc's "GetBlockByNumber" function
+        qscc/GetBlockByNumber: /Channel/Application/Readers
+
+        # ACL policy for qscc's  "GetBlockByHash" function
+        qscc/GetBlockByHash: /Channel/Application/Readers
+
+        # ACL policy for qscc's "GetTransactionByID" function
+        qscc/GetTransactionByID: /Channel/Application/Readers
+
+        # ACL policy for qscc's "GetBlockByTxID" function
+        qscc/GetBlockByTxID: /Channel/Application/Readers
+
+        #---Configuration System Chaincode (cscc) function to policy mapping for access control---#
+
+        # ACL policy for cscc's "GetConfigBlock" function
+        cscc/GetConfigBlock: /Channel/Application/Readers
+
+        # ACL policy for cscc's "GetConfigTree" function
+        cscc/GetConfigTree: /Channel/Application/Readers
+
+        # ACL policy for cscc's "SimulateConfigTreeUpdate" function
+        cscc/SimulateConfigTreeUpdate: /Channel/Application/Readers
+
+        #---Miscellanesous peer function to policy mapping for access control---#
+
+        # ACL policy for invoking chaincodes on peer
+        peer/Propose: /Channel/Application/Writers
+
+        # ACL policy for chaincode to chaincode invocation
+        peer/ChaincodeToChaincode: /Channel/Application/Readers
+
+        #---Events resource to policy mapping for access control###---#
+
+        # ACL policy for sending block events
+        event/Block: /Channel/Application/Readers
+
+        # ACL policy for sending filtered block events
+        event/FilteredBlock: /Channel/Application/Readers
+
+    # Organizations lists the orgs participating on the application side of the
+    # network.
+    Organizations:
+
+    # Policies defines the set of policies at this level of the config tree
+    # For Application policies, their canonical path is
+    #   /Channel/Application/<PolicyName>
+    Policies: &ApplicationDefaultPolicies
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+
+    # Capabilities describes the application level capabilities, see the
+    # dedicated Capabilities section elsewhere in this file for a full
+    # description
+    Capabilities:
+        <<: *ApplicationCapabilities
+
+################################################################################
+#
+#   ORDERER
+#
+#   This section defines the values to encode into a config transaction or
+#   genesis block for orderer related parameters.
+#
+################################################################################
+Orderer: &OrdererDefaults
+
+    # Orderer Type: The orderer implementation to start.
+    # Available types are "solo" and "kafka".
+    OrdererType: solo
+
+    # Addresses here is a nonexhaustive list of orderers the peers and clients can
+    # connect to. Adding/removing nodes from this list has no impact on their
+    # participation in ordering.
+    # NOTE: In the solo case, this should be a one-item list.
+    Addresses:
+        - orderer.dy:7050
+
+    # Batch Timeout: The amount of time to wait before creating a batch.
+    BatchTimeout: 2s
+
+    # Batch Size: Controls the number of messages batched into a block.
+    # The orderer views messages opaquely, but typically, messages may
+    # be considered to be Fabric transactions.  The 'batch' is the group
+    # of messages in the 'data' field of the block.  Blocks will be a few kb
+    # larger than the batch size, when signatures, hashes, and other metadata
+    # is applied.
+    BatchSize:
+
+        # Max Message Count: The maximum number of messages to permit in a
+        # batch.  No block will contain more than this number of messages.
+        MaxMessageCount: 500
+
+        # Absolute Max Bytes: The absolute maximum number of bytes allowed for
+        # the serialized messages in a batch. The maximum block size is this value
+        # plus the size of the associated metadata (usually a few KB depending
+        # upon the size of the signing identities). Any transaction larger than
+        # this value will be rejected by ordering. If the "kafka" OrdererType is
+        # selected, set 'message.max.bytes' and 'replica.fetch.max.bytes' on
+        # the Kafka brokers to a value that is larger than this one.
+        AbsoluteMaxBytes: 10 MB
+
+        # Preferred Max Bytes: The preferred maximum number of bytes allowed
+        # for the serialized messages in a batch. Roughly, this field may be considered
+        # the best effort maximum size of a batch. A batch will fill with messages
+        # until this size is reached (or the max message count, or batch timeout is
+        # exceeded).  If adding a new message to the batch would cause the batch to
+        # exceed the preferred max bytes, then the current batch is closed and written
+        # to a block, and a new batch containing the new message is created.  If a
+        # message larger than the preferred max bytes is received, then its batch
+        # will contain only that message.  Because messages may be larger than
+        # preferred max bytes (up to AbsoluteMaxBytes), some batches may exceed
+        # the preferred max bytes, but will always contain exactly one transaction.
+        PreferredMaxBytes: 2 MB
+
+    # Max Channels is the maximum number of channels to allow on the ordering
+    # network. When set to 0, this implies no maximum number of channels.
+    MaxChannels: 0
+
+    Kafka:
+        # Brokers: A list of Kafka brokers to which the orderer connects. Edit
+        # this list to identify the brokers of the ordering service.
+        # NOTE: Use IP:port notation.
+        Brokers:
+            - kafka0:9092
+            - kafka1:9092
+            - kafka2:9092
+
+    # EtcdRaft defines configuration which must be set when the "etcdraft"
+    # orderertype is chosen.
+    EtcdRaft:
+        # The set of Raft replicas for this network. For the etcd/raft-based
+        # implementation, we expect every replica to also be an OSN. Therefore,
+        # a subset of the host:port items enumerated in this list should be
+        # replicated under the Orderer.Addresses key above.
+        Consenters:
+            - Host: raft0.example.com
+              Port: 7050
+              ClientTLSCert: path/to/ClientTLSCert0
+              ServerTLSCert: path/to/ServerTLSCert0
+            - Host: raft1.example.com
+              Port: 7050
+              ClientTLSCert: path/to/ClientTLSCert1
+              ServerTLSCert: path/to/ServerTLSCert1
+            - Host: raft2.example.com
+              Port: 7050
+              ClientTLSCert: path/to/ClientTLSCert2
+              ServerTLSCert: path/to/ServerTLSCert2
+
+        # Options to be specified for all the etcd/raft nodes. The values here
+        # are the defaults for all new channels and can be modified on a
+        # per-channel basis via configuration updates.
+        Options:
+            # TickInterval is the time interval between two Node.Tick invocations.
+            TickInterval: 500ms
+
+            # ElectionTick is the number of Node.Tick invocations that must pass
+            # between elections. That is, if a follower does not receive any
+            # message from the leader of current term before ElectionTick has
+            # elapsed, it will become candidate and start an election.
+            # ElectionTick must be greater than HeartbeatTick.
+            ElectionTick: 10
+
+            # HeartbeatTick is the number of Node.Tick invocations that must
+            # pass between heartbeats. That is, a leader sends heartbeat
+            # messages to maintain its leadership every HeartbeatTick ticks.
+            HeartbeatTick: 1
+
+            # MaxInflightBlocks limits the max number of in-flight append messages
+            # during optimistic replication phase.
+            MaxInflightBlocks: 5
+
+            # SnapshotIntervalSize defines number of bytes per which a snapshot is taken
+            SnapshotIntervalSize: 20 MB
+
+    # Organizations lists the orgs participating on the orderer side of the
+    # network.
+    Organizations:
+
+    # Policies defines the set of policies at this level of the config tree
+    # For Orderer policies, their canonical path is
+    #   /Channel/Orderer/<PolicyName>
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+        # BlockValidation specifies what signatures must be included in the block
+        # from the orderer for the peer to validate it.
+        BlockValidation:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+
+    # Capabilities describes the orderer level capabilities, see the
+    # dedicated Capabilities section elsewhere in this file for a full
+    # description
+    Capabilities:
+        <<: *OrdererCapabilities
+
+################################################################################
+#
+#   CHANNEL
+#
+#   This section defines the values to encode into a config transaction or
+#   genesis block for channel related parameters.
+#
+################################################################################
+Channel: &ChannelDefaults
+    # Policies defines the set of policies at this level of the config tree
+    # For Channel policies, their canonical path is
+    #   /Channel/<PolicyName>
+    Policies:
+        # Who may invoke the 'Deliver' API
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        # Who may invoke the 'Broadcast' API
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        # By default, who may modify elements at this config level
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+
+
+    # Capabilities describes the channel level capabilities, see the
+    # dedicated Capabilities section elsewhere in this file for a full
+    # description
+    Capabilities:
+        <<: *ChannelCapabilities
+
+################################################################################
+#
+#   PROFILES
+#
+#   Different configuration profiles may be encoded here to be specified as
+#   parameters to the configtxgen tool. The profiles which specify consortiums
+#   are to be used for generating the orderer genesis block. With the correct
+#   consortium members defined in the orderer genesis block, channel creation
+#   requests may be generated with only the org member names and a consortium
+#   name.
+#
+################################################################################
+Profiles:
+
+    # SampleSingleMSPSolo defines a configuration which uses the Solo orderer,
+    # and contains a single MSP definition (the MSP sampleconfig).
+    # The Consortium SampleConsortium has only a single member, SampleOrg.
+    # SampleSingleMSPSolo:
+    #     <<: *ChannelDefaults
+    #     Orderer:
+    #         <<: *OrdererDefaults
+    #         Organizations:
+    #             - *SampleOrg
+    #     Consortiums:
+    #         SampleConsortium:
+    #             Organizations:
+    #                 - *SampleOrg
+
+    # # SampleSingleMSPKafka defines a configuration that differs from the
+    # # SampleSingleMSPSolo one only in that it uses the Kafka-based orderer.
+    # SampleSingleMSPKafka:
+    #     <<: *ChannelDefaults
+    #     Orderer:
+    #         <<: *OrdererDefaults
+    #         OrdererType: kafka
+    #         Organizations:
+    #             - *SampleOrg
+    #     Consortiums:
+    #         SampleConsortium:
+    #             Organizations:
+    #                 - *SampleOrg
+
+    # # SampleInsecureSolo defines a configuration which uses the Solo orderer,
+    # # contains no MSP definitions, and allows all transactions and channel
+    # # creation requests for the consortium SampleConsortium.
+    # SampleInsecureSolo:
+    #     <<: *ChannelDefaults
+    #     Orderer:
+    #         <<: *OrdererDefaults
+    #     Consortiums:
+    #         SampleConsortium:
+    #             Organizations:
+
+    # # SampleInsecureKafka defines a configuration that differs from the
+    # # SampleInsecureSolo one only in that it uses the Kafka-based orderer.
+    # SampleInsecureKafka:
+    #     <<: *ChannelDefaults
+    #     Orderer:
+    #         OrdererType: kafka
+    #         <<: *OrdererDefaults
+    #     Consortiums:
+    #         SampleConsortium:
+    #             Organizations:
+
+    # # SampleDevModeSolo defines a configuration which uses the Solo orderer,
+    # # contains the sample MSP as both orderer and consortium member, and
+    # # requires only basic membership for admin privileges. It also defines
+    # # an Application on the ordering system channel, which should usually
+    # # be avoided.
+    # SampleDevModeSolo:
+    #     <<: *ChannelDefaults
+    #     Orderer:
+    #         <<: *OrdererDefaults
+    #         Organizations:
+    #             - <<: *SampleOrg
+    #               Policies:
+    #                   <<: *SampleOrgPolicies
+    #                   Admins:
+    #                       Type: Signature
+    #                       Rule: "OR('SampleOrg.member')"
+    #     Application:
+    #         <<: *ApplicationDefaults
+    #         Organizations:
+    #             - <<: *SampleOrg
+    #               Policies:
+    #                   <<: *SampleOrgPolicies
+    #                   Admins:
+    #                       Type: Signature
+    #                       Rule: "OR('SampleOrg.member')"
+    #     Consortiums:
+    #         SampleConsortium:
+    #             Organizations:
+    #                 - <<: *SampleOrg
+    #                   Policies:
+    #                       <<: *SampleOrgPolicies
+    #                       Admins:
+    #                           Type: Signature
+    #                           Rule: "OR('SampleOrg.member')"
+
+    # # SampleDevModeKafka defines a configuration that differs from the
+    # # SampleDevModeSolo one only in that it uses the Kafka-based orderer.
+    # SampleDevModeKafka:
+    #     <<: *ChannelDefaults
+    #     Orderer:
+    #         <<: *OrdererDefaults
+    #         OrdererType: kafka
+    #         Organizations:
+    #             - <<: *SampleOrg
+    #               Policies:
+    #                   <<: *SampleOrgPolicies
+    #                   Admins:
+    #                       Type: Signature
+    #                       Rule: "OR('SampleOrg.member')"
+    #     Application:
+    #         <<: *ApplicationDefaults
+    #         Organizations:
+    #             - <<: *SampleOrg
+    #               Policies:
+    #                   <<: *SampleOrgPolicies
+    #                   Admins:
+    #                       Type: Signature
+    #                       Rule: "OR('SampleOrg.member')"
+    #     Consortiums:
+    #         SampleConsortium:
+    #             Organizations:
+    #                 - <<: *SampleOrg
+    #                   Policies:
+    #                       <<: *SampleOrgPolicies
+    #                       Admins:
+    #                           Type: Signature
+    #                           Rule: "OR('SampleOrg.member')"
+
+    # # SampleSingleMSPChannel defines a channel with only the sample org as a
+    # # member. It is designed to be used in conjunction with SampleSingleMSPSolo
+    # # and SampleSingleMSPKafka orderer profiles.   Note, for channel creation
+    # # profiles, only the 'Application' section and consortium # name are
+    # # considered.
+    # SampleSingleMSPChannel:
+    #     Consortium: SampleConsortium
+    #     Application:
+    #         <<: *ApplicationDefaults
+    #         Organizations:
+    #             - *SampleOrg
+
+    # # SampleDevModeEtcdRaft defines a configuration that differs from the
+    # # SampleDevModeSolo one only in that it uses the etcd/raft-based orderer.
+    # SampleDevModeEtcdRaft:
+    #     <<: *ChannelDefaults
+    #     Orderer:
+    #         <<: *OrdererDefaults
+    #         OrdererType: etcdraft
+    #         Organizations:
+    #             - <<: *SampleOrg
+    #               Policies:
+    #                   <<: *SampleOrgPolicies
+    #                   Admins:
+    #                       Type: Signature
+    #                       Rule: "OR('SampleOrg.member')"
+    #     Application:
+    #         <<: *ApplicationDefaults
+    #         Organizations:
+    #             - <<: *SampleOrg
+    #               Policies:
+    #                   <<: *SampleOrgPolicies
+    #                   Admins:
+    #                       Type: Signature
+    #                       Rule: "OR('SampleOrg.member')"
+    #     Consortiums:
+    #         SampleConsortium:
+    #             Organizations:
+    #                 - <<: *SampleOrg
+    #                   Policies:
+    #                       <<: *SampleOrgPolicies
+    #                       Admins:
+    #                           Type: Signature
+    #                           Rule: "OR('SampleOrg.member')"
+
+    # Our channel start from here
+    TestOrgsOrdererGenesis:
+        Orderer:
+            <<: *OrdererDefaults
+            Organizations:
+                - *OrdererOrg
+        Consortiums:
+            SampleConsortium:
+                Organizations:
+                    - *Org1
+                    - *Org2
+                    - *Org3
+                    - *Org4
+
+    TestOrgsChannel:
+        Consortium: SampleConsortium
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *Org1
+                - *Org2
+                - *Org3
+                - *Org4
+    Org1Channel:
+        Consortium: SampleConsortium
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *Org1
+                - *Org4
+    Org2Channel:
+        Consortium: SampleConsortium
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *Org2
+                - *Org4
+    Org3Channel:
+        Consortium: SampleConsortium
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *Org3
+                - *Org4
+```
+
+
+
+# 参考
+
+https://blog.csdn.net/lvyibin890/article/details/106217716

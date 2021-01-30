@@ -1,6 +1,8 @@
 YAML 的语法和其他高级语言类似，并且可以简单表达清单、散列表，标量等数据形态。它使用空白符号缩进和大量依赖外观的特色，特别适合用来表达或编辑数据结构、各种配置文件、倾印调试内容、文件大纲（例如：许多电子邮件标题格式和YAML非常接近）。
 
 > YAML 是专门用来写配置文件的语言，非常简洁和强大，远比 JSON 格式方便。
+>
+> 在线Demo验证[链接](http://nodeca.github.io/js-yaml/)
 
 ### 基本语法
 
@@ -98,8 +100,9 @@ companies: [{id: 1,name: company1,price: 200W},{id: 2,name: company2,price: 500W
 
 > 注意：
 >
-> - YAML锚点在整个文档中必须是唯一的
-> - 未能指定唯一锚点将导致`yaml.load()`上的错误
+> YAML锚点在整个文档中必须是**唯一**的
+>
+> 未能指定唯一锚点将导致`yaml.load()`上的错误
 
 ```yaml
 defaults: &defaults
@@ -109,15 +112,8 @@ defaults: &defaults
 development:
   database: myapp_development
   <<: *defaults
-
-test:
-  database: myapp_test
-  <<: *defaults
-```
-
-相当于:
-
-```yaml
+  
+##### 相当于 #####
 defaults:
   adapter:  postgres
   host:     localhost
@@ -126,30 +122,39 @@ development:
   database: myapp_development
   adapter:  postgres
   host:     localhost
-
-test:
-  database: myapp_test
-  adapter:  postgres
-  host:     localhost
 ```
 
-> **&** 用来建立锚点（defaults），**<<** 表示<u>合并到当前数据</u>，***** 用来引用锚点。
+> **&** 用来建立锚点（defaults），**<<** 表示将**键值对**<u>合并到当前数据</u>，***** 用来引用锚点。
 
-下面是另一个例子:
+下面是另一个例子，在server对redis的访问配置中，针对不同的db可能会写成如下配置:
 
+```YAML
+user:
+    host: 127.0.0.1
+    db: 8
+
+book:
+    host: 127.0.0.1
+    db: 9
+
+comment:
+    host: 127.0.0.1
+    db: 10
+# 此处host其实配置都是一样的，只有db不一样，通过锚点和引用的功能，可以写成如下:
+localhost: &localhost1  # 指将localhost所对应的值设为一个锚点
+    host: 127.0.0.1
+user:
+    <<: *localhost1
+    db: 8
+book:
+    <<: *localhost1
+    db: 9
+comment:
+    <<: *localhost1
+    db: 10
 ```
-- &showell Steve 
-- Clark 
-- Brian 
-- Oren 
-- *showell 
-```
 
-转为 JavaScript 代码如下:
-
-```yaml
-[ 'Steve', 'Clark', 'Brian', 'Oren', 'Steve' ]
-```
+其中`&`表示将localhost1作为localhost的**别名**，标识取别名localhost1对应的value，`<<`表示将localhost1代表的map**合并入**当前map数据。
 
 
 
