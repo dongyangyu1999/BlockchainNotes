@@ -135,3 +135,17 @@
   * 组织、通道配置文件`configtx.yaml`
 
 > 笔记位置[Hyperledger Fabric学习笔记](https://github.com/dongyangyu1999/BlockchainNotes/tree/main/Hyperledger%20Fabric%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0)
+
+
+
+# 1.23-1.29
+
+* 分析配置文件
+  * 排序节点配置文件`orderer.yaml`
+  * peer节点配置文件`core.yaml`
+* 创建、加入通道的指令学习
+* 安装，实例化链码，以及链码调用实现
+* 学习`docker-compose`在单机上部署多个容器
+* 学习`Vagrantfile`配置文件
+
+> 笔记位置[Hyperledger Fabric学习笔记](https://github.com/dongyangyu1999/BlockchainNotes/tree/main/Hyperledger%20Fabric%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0)
