@@ -18,8 +18,19 @@ docker run [OPTIONS] IMAGE [COMMAND] [ARG...]
 -P: 随机端口映射，容器内部端口随机映射到主机的端口;
 -p: 指定端口映射，格式为：主机(宿主)端口:容器端口;
 --volume , -v: 绑定一个卷
-
+--rm: 容器退出时就能够自动清理容器内部的文件系统，显然，--rm选项不能与-d同时使用（或者说同时使用没有意义），即只能自动清理foreground容器，不能自动清理detached容器。
+--mount type=bind, src=source_path, dst=target_path: 指定挂载一个本地主机的目录到容器中去
+-u, --user string: 指定用户 (格式: <name|uid>[:<group|gid>])
+-w, --workdir string: 指定工作目录
 ```
+
+docker数据挂载：
+
+`docker run -it --mount src=数据卷名称，dst=挂载到容器的目录 镜像名`
+
+* 可以通过`bind `方式挂载本地**目录**到指定容器，数据不随着container的结束而结束，数据存在于host机器上，通俗地说就是同步。
+
+
 
 **实例：**
 
@@ -35,6 +46,11 @@ docker run -p 80:80 -v /data:/data -d nginx:latest
 
 # 使用镜像nginx:latest以交互模式启动一个容器,在容器内执行/bin/bash命令。
 docker run -it nginx-latest /bin/bash
+
+# 将容器命名为fabric-tool
+docker run --rm --name fabric-tool  --mount type=bind,src=`pwd`/fabricconfig,dst=/etc/hyperledger/fabric -w /etc/hyperledger/fabric hyperledger/fabric-tools:1.4.1 cryptogen  generate --config=cryptogen_config.yaml --output ./crypto-config 
+
+
 ```
 
 
@@ -49,7 +65,10 @@ docker exec [OPTIONS] CONTAINER COMMAND [ARG...]
 -d, --detach:分离模式: 在后台运行
 -i, --interactive:即使没有附加也保持STDIN 打开
 -t, --tty:分配一个伪终端(pseudo-tty)
+
 ```
+
+
 
 比如想在容器上执行一个交互式的bash shell
 

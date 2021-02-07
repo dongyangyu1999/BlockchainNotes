@@ -64,10 +64,6 @@ Linux Shell中的变量分为用户自定义变量，环境变量，位置参数
 
 ## 变量赋值
 
-
-
-
-
 ```shell
 # 1. 定义时赋值：
 # 变量＝值 等号两侧不能有空格
@@ -107,7 +103,73 @@ echo $SUM2
 
 　　
 
+# set命令
 
+> 写的每个脚本都应该在文件开头加上`set -e`,这句语句告诉bash如果任何语句的执行结果不是true则应该退出。
+> 这样的好处是<u>防止错误像滚雪球般变大导致一个致命错误</u>，而这些错误本应该在之前就被处理掉。如果要增加可读性，可以使用`set -o errexit`，它的作用与`set -e`相同。
+
+`set -e`，作用是：脚本只要发生错误，就会终止执行。
+
+```bash
+#!/usr/bin/env bash
+set -e
+
+foo
+echo bar
+```
+
+执行结果如下。
+
+> ```bash
+> $ bash script.sh
+> script.sh: line4: foo: No such file or directory
+> ```
+
+
+
+
+
+# 判断
+
+## 判断文件是否存在
+
+* `-d`：判断文件夹(directory)
+* `-f`：判断文件(file)
+* `-n`：判断是否有值，如`-n "$A"`，如果A有值，则为true
+
+```SHELL
+#!/bin/sh
+# 判断文件是否存在
+ 
+myPath="/var/log/httpd/"
+myFile="/var /log/httpd/access.log"
+ 
+# 这里的-x 参数判断$myPath是否存在并且是否具有可执行权限
+if [ ! -x "$myPath"]; then
+ mkdir "$myPath"
+fi
+# 这里的-d 参数判断$myPath是否存在
+if [ ! -d "$myPath"]; then
+ mkdir "$myPath"
+fi
+ 
+# 这里的-f参数判断$myFile是否存在
+if [ ! -f "$myFile" ]; then
+ touch "$myFile"
+fi
+# 其他参数还有-n,-n是判断一个变量是否是否有值
+if [ ! -n "$myVar" ]; then
+ echo "$myVar is empty"
+ exit 0
+fi
+ 
+# 两个变量判断是否相等
+if [ "$var1" = "$var2" ]; then
+ echo '$var1 eq $var2'
+else
+ echo '$var1 not eq $var2'
+fi
+```
 
 
 

@@ -30,10 +30,11 @@ docker-compose rm -f [serviceName]
 ## -v ：删除挂载卷和volunme的链接
 docker-compose down -v（相当于 stop + rm ）：
 
-1.30 解决
-root@localhost fabric # docker logs -f orderer 
-2021-01-29 13:24:55.696 UTC [localconfig] completeInitialization -> INFO 001 Kafka.Version unset, setting to 0.10.2.0
-2021-01-29 13:24:55.696 UTC [orderer.common.server] initializeLocalMsp -> FATA 002 Failed to initialize local MSP: could not load a valid signer certificate from directory /etc/hyperledger/fabric/crypto-config/ordererOrganizations/dy/msp/signcerts: stat /etc/hyperledger/fabric/crypto-config/ordererOrganizations/dy/msp/signcerts: no such file or directory
+# 显示所有容器
+docker-compose ps
+
+# 验证（docker-compose.yml）文件配置，当配置正确时，不输出任何内容，当文件配置错误，输出错误信息。
+docker-compose config  -q
 
 ```
 
