@@ -1,3 +1,11 @@
+# 什么是vagrant？
+
+vagrant是一个工具，用于创建和部署虚拟化开发环境的。
+
+拿VirtualBox举例，VirtualBox会开放一个创建虚拟机的接口，Vagrant会利用这个接口创建虚拟机，并且通过Vagrant来管理，配置和自动安装虚拟机。
+
+
+
 # Command
 
 ## 初始化新VM
