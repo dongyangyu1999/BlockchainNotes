@@ -179,5 +179,10 @@
 
 * 了解gRPC，通过Fabric-node-sdk学习如何通过节点的gRPC协议访问安装在peer节点上的链码
 
-  
+
+# 2.27-3.5
+
+* 完成毕设开题报告
+
+* 通过Fabric-node-sdk学习如何通过节点的gRPC协议访问安装在peer节点上的链码
 

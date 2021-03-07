@@ -55,6 +55,14 @@ docker run --rm --name fabric-tool  --mount type=bind,src=`pwd`/fabricconfig,dst
 
 
 
+## 关闭所有容器
+
+```BASH
+docker stop $(docker ps -a | awk '{ print $1}' | tail -n +2)
+```
+
+
+
 ## 执行命令
 
 在运行的容器中执行命令，操作的对象是 **容器**。
@@ -76,6 +84,17 @@ docker exec [OPTIONS] CONTAINER COMMAND [ARG...]
 # 如：在容器 mynginx 中开启一个交互模式的终端:
 docker exec -it mynginx bash # bash是指进入容器的终端，可执行shell命令
 ```
+
+
+
+## 查看容器日志
+
+```BASH
+# 查看容器日志 -f, --follow         跟踪实时日志
+docker logs -f [容器名称]
+```
+
+
 
 
 

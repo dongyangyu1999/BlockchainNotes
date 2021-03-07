@@ -26,17 +26,37 @@ Commands:
   `extend [<flags>]
 ```
 
-## Cryptogen模块配置文件
+# Cryptogen模块配置文件`crypto-config`详解
 
 Cryptogen模块的配置文件用来描述需要生成的证书文件的特性。
-比如：有多少个组织有多少个节点，需要多少个账号等。这里我们通过一个cryptogen模块配置文件的具体例子来初步了解配置文件的结构，该例子是Fabric源代码中自带的示例 - `crypto-config.yaml`，该配置文件名可自行定义。
+比如：有多少个组织有多少个节点，需要多少个账号等。这里我们通过一个cryptogen模块配置文件的具体例子来初步了解配置文件的结构，该例子是Fabric源代码中自带的示例  `crypto-config.yaml`，该配置文件名可自行定义。
+
+crypto-config是hyperledger<u>用来生成各种证书(x509 证书)</u>的配置文件，相关的证书有各个节点的MSP证书，各个节点通讯使用的TLS证书，以及各个用户的证书。
+
+fabric提供了Cryptogen工具来通过`crypto-config.yaml`文件指定的网络拓扑，生成证书库。每个组织都有一个唯一的根证书（ca-cert），该组织下的所有证书都由该根证书签发。Fabric中所有的交易和通信由实体的私钥（keystore）签名，然后通过公钥（signcerts）进行验证。
+
+## x509 证书
+
+要了解该文件到底配置了什么，就需要大概知道x509证书中到底包含哪些信息。使用OpenSSL对任一证书解码
+
+![在这里插入图片描述](MarkdownAssets/crypto-config%E8%AF%81%E4%B9%A6%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6.assets/20200318231125570.png)
+
+即可看到证书信息和证书颁发者的信息
+![在这里插入图片描述](MarkdownAssets/crypto-config%E8%AF%81%E4%B9%A6%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6.assets/20200318231200780.png)
+![在这里插入图片描述](MarkdownAssets/crypto-config%E8%AF%81%E4%B9%A6%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6.assets/20200318231213771.png)
+
+此外证书中还包含有主体的公钥信息。
+
+## 配置文件主要结构
+
+配置文件主要分为两部分，分别配置order节点的证书及peer节点的证书。
 
 模版如下(`crypto-config.yaml`)：
 
 ```YAML
 OrdererOrgs:					# 排序节点的组织定义
-  - Name: Orderer				# orderer节点的名称
- 	Domain: example.com			# orderer节点的根域名 
+  - Name: Orderer				# orderer组织的名称
+ 	Domain: example.com			# orderer组织的域名， 
  	Specs:
 	    - Hostname: orderer		# orderer节点的主机名
 PeerOrgs:						# peer节点的组织定义
@@ -44,9 +64,9 @@ PeerOrgs:						# peer节点的组织定义
 	Domain: org1.example.com	# 组织1的根域名
  	EnableNodeOUs: true			# 是否支持node.js
  	Template:					
-	    Count: 2				# 组织1中的节点(peer)数目
+	    Count: 2				# 生成2套公私钥和证书，一套给peer0.org1，一套给peer1.org1
 	Users:
- 	    Count: 1				# 组织1中的用户数目
+ 	    Count: 1				# Users. Count=1是说每个Template下面会有几个普通User（注意，Admin是Admin，不包含在这个计数中），这里配置了1，也就是说我们只需要一个普通用户User1@org1.example.com 我们可以根据实际需要调整这个配置文件，增删Org Users等。
   - Name: Org2
     Domain: org2.example.com
     EnableNodeOUs: true
@@ -56,14 +76,28 @@ PeerOrgs:						# peer节点的组织定义
         Count: 1
 ```
 
-**说明**
+### 设置项详解
 
 上述配置文件定义了一个排序组织，两个peer节点组织
 
-* 排序组织名为`Orderer`，域名为`example.com`，主机名为`orderer`
+上方配置可看出两个Peer组织分属于**同一个管理域**(example.com)，
 
-* 共有两个节点组织，分别为Org1和Org2，域名分别为`org[1,2].example.com`
-  * 组织 org1 包含了2个节点和1个用户，组织 org2 包含2个点和1个用户
+1. order节点
+
+* Name 只用作标识
+* Domain 配置了生成证书的域
+* Specs 配置了证书的名
+* Domain和Specs合起来就是生成的证书<u>主体的名称</u>，即CN字段。
+  Specs可以配置多个，Cryptogen会为每个Spec生成一个MSP证书和一个TLS证书。
+
+2. peer节点
+
+* Name和Domain和order相同
+* Count 定义了peer节点的个数。和order节点不同，peer节点的域名由templete<u>默认配置</u>。
+* 规则为"peer%d" 其中%d由0到Count-1.如果Count为2，域名即为peer0.{{Domain}}和peer1.{{Domain}}
+* Users 配置了<u>非管理员</u>用户的个数(管理员的证书默认生成)
+
+
 
 **测试**
 
@@ -103,7 +137,7 @@ $ cryptogen generate --config=./crypto-config.yaml --output ./crypto-config
 #	--output: 指定证书文件的存储位置, 可以不指定。会在对应路径生成目录，默认名字为：crypto-config
 ```
 
-### 目录内容
+# `crypto-config`文件夹详解
 
 `crypto-config`目录下有oederer和peer的文件夹
 
@@ -111,8 +145,8 @@ $ cryptogen generate --config=./crypto-config.yaml --output ./crypto-config
 root@localhost test $ tree -L 2
 .
 ├── crypto-config
-│   ├── ordererOrganizations # orderer节点相关的证书文件
-│   └── peerOrganizations    # 组织相关的证书文件(组织的节点数, 用户数等证书文件)
+│   ├── ordererOrganizations # orderer组织相关的证书文件
+│   └── peerOrganizations    # peer组织相关的证书文件(组织的节点数, 用户数等证书文件)
 └── crypto-config.yaml       # 证书配置文件
 ```
 
@@ -122,7 +156,7 @@ root@localhost test $ tree -L 2
 root@localhost test $ tree ./crypto-config/ordererOrganizations/ -L 4
 ./crypto-config/ordererOrganizations/
 └── test.com  # 根域名为test.com的orderer节点的相关证书文件
-    ├── ca 	  # CA服务器的签名文件
+    ├── ca 	  # order.example根证书
     │   ├── b0aa3d3428d28cf708e7884c2f737c42a8a4ae43040eef5c43643184b110911b_sk
     │   └── ca.test.com-cert.pem
     ├── msp   # 存放代表该组织的身份信息
@@ -132,15 +166,15 @@ root@localhost test $ tree ./crypto-config/ordererOrganizations/ -L 4
     │   │   └── ca.test.com-cert.pem
     │   └── tlscacerts  # tls连接用的身份证书
     │       └── tlsca.test.com-cert.pem
-    ├── orderers # orderer节点需要的相关的证书文件
+    ├── orderers # orderer的节点们需要的相关的证书文件
     │   └── orderer.test.com
     │       ├── msp     # orderer节点相关证书
     │       └── tls     # orderer节点和其他节点连接用的身份证书
     ├── tlsca
     │   ├── 34d5992d4c430a5b6beeda13202de1b90c30a46061a2dacce3442d6a25ebeb0a_sk
     │   └── tlsca.test.com-cert.pem
-    └── users    # orderer节点 用户 相关的证书
-        └── Admin@test.com
+    └── users    # orderer组织的用们相关的证书
+        └── Admin@test.com  # orderer管理员证书
             ├── msp
             └── tls
 
@@ -157,7 +191,7 @@ root@localhost test $ tree ./crypto-config/ordererOrganizations/ -L 4
 root@localhost peerOrganizations # tree
 .
 ├── go.test.com
-│   ├── ca    # 根节点签名证书
+│   ├── ca    # go组织根节点签名证书
 │   │   ├── c38685c0919ed148d17a6613c8573dce114320d7330bf6ac49d2de842065d6bb_sk
 │   │   └── ca.go.test.com-cert.pem
 │   ├── msp
@@ -167,7 +201,7 @@ root@localhost peerOrganizations # tree
 │   │   ├── config.yaml
 │   │   └── tlscacerts  # TLS连接身份证书
 │   │       └── tlsca.go.test.com-cert.pem
-│   ├── peers  # 存放该组织下所有peer节点的证书
+│   ├── peers  # 存放该组织下所有peer节点们的证书
 │   │   ├── peer0.go.test.com
 │   │   │   ├── msp
 │   │   │   │   ├── admincerts # 组织的管理证书, 创建通道必须要有该证书
@@ -191,7 +225,7 @@ root@localhost peerOrganizations # tree
 │   ├── tlsca
 │   │   ├── a2234b85a5bf1f3d3814041fe4bbe28e755694a4683690872510a35f31171001_sk
 │   │   └── tlsca.go.test.com-cert.pem
-│   └── users  # 存放属于该组织的用户实体
+│   └── users  # 存放属于该组织的用户们的证书
 │       ├── Admin@go.test.com # 管理员用户的信息，包括其msp证书和tls证书
 │       │   ├── msp
 │       │   │   ├── admincerts   # 组织的根证书, 作为管理身份的验证
@@ -208,7 +242,7 @@ root@localhost peerOrganizations # tree
 │       │       ├── ca.crt       # 组织的根证书
 │       │       ├── client.crt   # 客户端身份的证书
 │       │       └── client.key   # 客户端的私钥
-│       ├── User1@go.test.com # 第一个用户的信息，结构和admin相同，包括msp证书和tls证书
+│       ├── User1@go.test.com # 用户1的信息，结构和admin相同，包括msp证书和tls证书
 │       │   ├── msp
 │       │   │   ├── admincerts
 │       │   │   ├── cacerts
@@ -220,11 +254,32 @@ root@localhost peerOrganizations # tree
 │       │       ├── ca.crt
 │       │       ├── client.crt
 │       │       └── client.key
-│       └── User2@go.test.com
+│       └── User2@go.test.com # 用户2的整数
 │           ...
 └── java.test.com
     ├── ca ...
 ```
+
+crypto-config文件加看起来复杂，其实都由规律。
+
+1. 包含ca的证书都是根证书，它是证书链的根，它的主体和签发者都是自己。
+   每个组织都有自己的根证书。其他证书都是由根证书直接或间接签发。
+2. 每个证书组织都由两个根证书，分别用于MSP(**成员身份管理**)和TLSCA(数据通信)。
+   同时每个节点和用户也有两套证书(msp/tls)。
+
+通过OpenSSL工具对证书解析可以看到。
+
+* 根证书的签发者和主体均为自己
+
+如ca.org1.example.com-cert.pem
+
+![image-20210301130539954](MarkdownAssets/crypto-config%E8%AF%81%E4%B9%A6%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6.assets/image-20210301130539954.png)
+
+* 其他子证书均由根证书颁发
+
+  如peer0.org1.example.com-cert.pem
+
+![image-20210301130558182](MarkdownAssets/crypto-config%E8%AF%81%E4%B9%A6%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6.assets/image-20210301130558182.png)
 
 
 
@@ -270,3 +325,5 @@ PeerOrgs:
 # 参考
 
 [Fabric核心模块之Cryptogen解析](https://sunlidong.blog.csdn.net/article/details/84203675)
+
+https://blog.csdn.net/github_39432037/article/details/104956758

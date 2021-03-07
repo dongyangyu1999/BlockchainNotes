@@ -1,5 +1,7 @@
 `configtx.yaml`配置文件模板可在GitHub仓库中找到（v1.4[链接](https://github.com/hyperledger/fabric/blob/release-1.4/sampleconfig/configtx.yaml)），
 
+官方提供的examples/e2e_cli/configtx.yaml这个文件里面配置了由2个Org参与的Orderer共识配置TwoOrgsOrdererGenesis，以及由2个Org参与的Channel配置：TwoOrgsChannel。Orderer可以设置共识的算法是Solo还是Kafka，以及共识时区块大小，超时时间等，我们使用默认值即可，不用更改。而Peer节点的配置包含了MSP的配置，锚节点的配置。如果我们有更多的Org，或者有更多的Channel，那么就可以根据模板进行对应的修改。
+
 # 功能
 
 组织机构配置文件`configtx.yaml`主要用来配置fabric的组织结构，通道及锚节点的配置。它主要完成以下几个功能
@@ -12,7 +14,7 @@
 
 官方参考链接：https://hyperledger-fabric.readthedocs.io/zh_CN/release-1.4/commands/configtxgen.html?highlight=configtx.yaml#null
 
-```
+```bash
 Usage of configtxgen:
   -asOrg string
       以特定组织（按名称）执行配置生成，仅包括组织（可能）有权设置的写集中的值。
@@ -39,6 +41,38 @@ Usage of configtxgen:
   -version
       显示版本信息。
 ```
+
+### 生成创世区块
+
+配置修改好后，我们就用configtxgen 生成创世区块。并把这个区块保存到本地channel-artifacts文件夹中：
+
+```bash
+configtxgen -profile TwoOrgsOrdererGenesis -outputBlock ./channel-artifacts/genesis.block
+```
+
+### 2生成Channel配置区块
+
+```bash
+configtxgen -profile TwoOrgsChannel -outputCreateChannelTx ./channel-artifacts/channel.tx -channelID mychannel
+```
+
+另外关于锚节点的更新，我们也需要使用这个程序来生成文件：
+
+```
+../../build/bin/configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/Org1MSPanchors.tx -channelID mychannel -asOrg Org1MSP
+
+../../build/bin/configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/Org2MSPanchors.tx -channelID mychannel -asOrg Org2MSP
+```
+
+最终，我们在channel-artifacts文件夹中，应该是能够看到4个文件。
+
+channel-artifacts/
+├── channel.tx
+├── genesis.block
+├── Org1MSPanchors.tx
+└── Org2MSPanchors.tx
+
+
 
 ## 配置注意点
 
@@ -508,6 +542,14 @@ Profiles:
 ## Organizations / 组织机构配置
 
 Organizations配置段用来定义组织机构实体，以便在后续配置中引用。
+
+**为什么设置锚节点**：锚节点是通道中能被所有对等节点探测、并能与之进行通信的一种对等节点。通道中的每个成员都有一个（或多个，以防单点故障）锚节点，允许属于不同成员身份的节点来发现通道中存在的其它节点。
+
+gossip 利用锚节点来保证不同组织间的互相通信。
+
+当提交了一个包含锚节点更新的配置区块时，Peer 节点会连接到锚节点并获取它所知道的所有节点信息。一个组织中至少有一个节点联系到了锚节点，锚节点就可以获取通道中所有节点的信息。因为 gossip 的通信是固定的，而且 Peer 节点总会被告知它们不知道的节点，所以可以建立起一个通道上成员的视图。
+
+参考：[Gossip数据传播协议](https://hyperledger-fabric.readthedocs.io/zh_CN/release-1.4/gossip.html)
 
 ```YAML
 Organizations:
