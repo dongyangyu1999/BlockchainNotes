@@ -76,16 +76,14 @@ docker exec [OPTIONS] CONTAINER COMMAND [ARG...]
 
 ```
 
-
-
 比如想在容器上执行一个交互式的bash shell
 
 ```BASH
 # 如：在容器 mynginx 中开启一个交互模式的终端:
 docker exec -it mynginx bash # bash是指进入容器的终端，可执行shell命令
+# 或者
+docker exec -it mynginx sh
 ```
-
-
 
 ## 查看容器日志
 
@@ -170,4 +168,18 @@ docker rmi -f $(docker images -q)
 # rmi: remove images
 # rm: remove containers
 ```
+
+# docker配置
+
+# docker端口的映射顺序
+
+```BASH
+sudo docker run -d -p 8080:80 --name static_web jamtur01/static_web nginx -g "dameon off;"
+# 将容器中的80端口，绑定到宿主机的8080端口
+ 
+0.0.0.0:8080->80/tcp  frosty_ptolemy
+# 本地主机的 8080 端口被映射到了容器的 80 端口
+```
+
+总结： 冒号之前是宿主机端口，外网直接访问，冒号之后是容器端口。
 
